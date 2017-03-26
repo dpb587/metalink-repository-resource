@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eu ; export SHELLOPTS
+
+cd "$(cd "$(dirname "$0")" && pwd)"
+
+export CGO_ENABLED=0
+export GOOS=linux
+export GOARCH=amd64
+
+docker_dir=$PWD
+
+( cd ..
+
+  go build -o $docker_dir/assets/in in/main.go
+  go build -o $docker_dir/assets/check check/main.go
+)
+
+docker build -t dpb587/metalink-repository-resource .
