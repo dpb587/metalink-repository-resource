@@ -48,34 +48,27 @@ func main() {
 		fatal("bad stdin: source: uri", err)
 	}
 
-	err = repository.Reload()
+	err = repository.Load()
 	if err != nil {
 		fatal("bad repository: load", err)
 	}
 
-	files, err := repository.FilterFiles(andFilter)
+	metalinks, err := repository.Filter(andFilter)
 	if err != nil {
-		fatal("bad repository: filter", err)
+		fatal("filtering metalinks", err)
 	}
 
-	sorter.Sort(files, sorter_reverse.Sorter{Sorter: sorter_fileversion.Sorter{}})
+	sorter.Sort(metalinks, sorter_reverse.Sorter{Sorter: sorter_fileversion.Sorter{}})
 
 	response := check.Response{}
-	versionsSeen := map[string]bool{}
 
-	for _, file := range files {
-		if _, seen := versionsSeen[file.File.Version]; seen {
-			continue
-		}
-
+	for _, meta4 := range metalinks {
 		response = append(
 			response,
 			models.Version{
-				Version: file.File.Version,
+				Version: meta4.Metalink.Files[0].Version,
 			},
 		)
-
-		versionsSeen[file.File.Version] = true
 
 		if request.Version == nil {
 			break

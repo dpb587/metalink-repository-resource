@@ -62,36 +62,36 @@ func main() {
 		fatal("bad stdin: source: uri", err)
 	}
 
-	err = repository.Reload()
+	err = repository.Load()
 	if err != nil {
 		fatal("bad repository: load", err)
 	}
 
-	files, err := repository.FilterFiles(andFilter)
+	metalinks, err := repository.Filter(andFilter)
 	if err != nil {
 		fatal("bad repository: filter", err)
 	}
 
-	if len(files) == 0 {
+	if len(metalinks) == 0 {
 		fatal("nothing to do", errors.New("version not found"))
 	}
 
-	sorter.Sort(files, sorter_reverse.Sorter{Sorter: sorter_fileversion.Sorter{}})
+	sorter.Sort(metalinks, sorter_reverse.Sorter{Sorter: sorter_fileversion.Sorter{}})
 
-	for _, file := range files {
-		local, err := factory.GetOrigin(filepath.Join(destination, file.File.Name))
+	for _, file := range metalinks[0].Metalink.Files {
+		local, err := factory.GetOrigin(filepath.Join(destination, file.Name))
 		if err != nil {
 			fatal("bad file: local", err)
 		}
 
-		prefix := fmt.Sprintf("%s\tget\t", file.File.Name)
-		progress := pb.New64(int64(file.File.Size)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Second).SetWidth(80 + len(prefix))
+		prefix := fmt.Sprintf("%s\tget\t", file.Name)
+		progress := pb.New64(int64(file.Size)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Second).SetWidth(80 + len(prefix))
 		progress.Prefix(prefix)
 		progress.Output = os.Stderr
 		progress.ShowPercent = false
 
-		for _, url := range file.File.URLs {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s\torigin\t%s", file.File.Name, url.URL))
+		for _, url := range file.URLs {
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s\torigin\t%s", file.Name, url.URL))
 
 			remote, err := factory.GetOrigin(url.URL)
 			if err != nil {
@@ -109,7 +109,7 @@ func main() {
 
 			knownHashes := []string{}
 
-			for _, hash := range file.File.Hashes {
+			for _, hash := range file.Hashes {
 				knownHashes = append(knownHashes, hash.Type)
 			}
 
@@ -120,7 +120,7 @@ func main() {
 
 			var expectedHash *metalink.Hash
 
-			for _, seekHash := range file.File.Hashes {
+			for _, seekHash := range file.Hashes {
 				if seekHash.Type != crypto.GetDigestType(algorithm.Name()) {
 					continue
 				}
@@ -148,7 +148,7 @@ func main() {
 				fatal("bad file: verify: mismatch", fmt.Errorf("expected %s, actual %s", expectedHash.Hash, crypto.GetDigestHash(actualHash)))
 			}
 
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s\t%s\t%s", file.File.Name, expectedHash.Type, expectedHash.Hash))
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s\t%s\t%s", file.Name, expectedHash.Type, expectedHash.Hash))
 		}
 	}
 

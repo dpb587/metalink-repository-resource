@@ -25,7 +25,7 @@ func NewDefaultFactory(fs boshsys.FileSystem) OriginFactory {
 }
 
 // @todo rename to Create
-func (f defaultFactory) New(uri string) (Origin, error) {
+func (f defaultFactory) Create(uri string) (Origin, error) {
 	parsed, err := url.Parse(uri)
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Parsing URI")
@@ -36,6 +36,8 @@ func (f defaultFactory) New(uri string) (Origin, error) {
 		return CreateFile(f.fs, parsed.Path)
 	case "http", "https":
 		return CreateHTTP(http.DefaultClient, uri)
+	case "ftp":
+		return CreateFTP(parsed)
 	case "s3":
 		secure := true
 

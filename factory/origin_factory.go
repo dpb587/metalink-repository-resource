@@ -15,5 +15,5 @@ func getOriginFactory() origin.OriginFactory {
 }
 
 func GetOrigin(uri string) (origin.Origin, error) {
-	return getOriginFactory().New(uri)
+	return getOriginFactory().Create(uri)
 }

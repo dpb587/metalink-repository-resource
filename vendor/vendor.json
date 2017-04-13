@@ -59,116 +59,128 @@
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "AZjhRDd1HLAIwRjEBaWXDmIKy04=",
+			"checksumSHA1": "Fd4TjLMRW9SuTBP9yOyXKIqxCLU=",
 			"path": "github.com/dpb587/metalink",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
 			"checksumSHA1": "iEMjFEc5jLWtICFC2Nd/kArHG1E=",
 			"path": "github.com/dpb587/metalink/crypto",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "TrQCtAiWsg1Ii/gIjyNg4a9tNfc=",
+			"checksumSHA1": "+yvKNT+71yW2vApby6C6VyadK6o=",
 			"path": "github.com/dpb587/metalink/origin",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "Ds+I0cVftsW4CCOTjikD4+TA49A=",
+			"checksumSHA1": "AxnGf6QVkztzFFC0mODnnUz5Us0=",
 			"path": "github.com/dpb587/metalink/repository",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "Ag9WaL4FEqr/hkkX+nUbb4hcVL0=",
+			"checksumSHA1": "3po+JO4shgF7V8q1xAUk9sksky8=",
 			"path": "github.com/dpb587/metalink/repository/filter",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "PvHqgi98ctoPIZRLQ5LUtOnXd/g=",
+			"checksumSHA1": "AVC6D3pY6OflyrGU+Id75gyJVbM=",
 			"path": "github.com/dpb587/metalink/repository/filter/and",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "ZC3zfF7jSk3/QcVoB4OdJIGQZpI=",
+			"checksumSHA1": "UipkILWBGR6hol7HdDRGIBBNMb4=",
 			"path": "github.com/dpb587/metalink/repository/filter/axiom",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "xSc9hlFdjrhkZX2c/eXfMPEdpyk=",
+			"checksumSHA1": "dsEkiKQp3GRxMFE+q/3DPpy9C4k=",
 			"path": "github.com/dpb587/metalink/repository/filter/fileversion",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
 			"checksumSHA1": "eRQw9fPhvP/lBWeVb3K6YJH8Qqc=",
 			"path": "github.com/dpb587/metalink/repository/filterfactory",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "ePOhRKMaNI4JucTMNtQdilPytPE=",
+			"checksumSHA1": "PBCqF+ud5au6dgugTuwIZ2DUZ/o=",
 			"path": "github.com/dpb587/metalink/repository/sorter",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "QIvwW+r1f6WAsqcCVtPp22CqeIU=",
+			"checksumSHA1": "NpT2hAwG79YRsTb641SX+kf04N0=",
 			"path": "github.com/dpb587/metalink/repository/sorter/fileversion",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "7GG6IYR1oQy6Jf31YfWc1O6leHI=",
+			"checksumSHA1": "mk1+Yyjhq8maxh3FBHn7332YLAM=",
 			"path": "github.com/dpb587/metalink/repository/sorter/reverse",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "vChYYp1mXSH1o5gkcX6UZP6acbI=",
+			"checksumSHA1": "0pW0R5ppptICAgTh5uaY5iw1Vt0=",
 			"path": "github.com/dpb587/metalink/repository/source",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
 			"checksumSHA1": "PAzcfSrHOXzUcHWJkaCDSh0qZI0=",
 			"path": "github.com/dpb587/metalink/repository/source/factory",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "u7g9j5Hu86PWhJtYXoWs7j1eI6Y=",
+			"checksumSHA1": "oELcsujgmBAlNCUt/0fiJNvxVHw=",
 			"path": "github.com/dpb587/metalink/repository/source/fs",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "FwI9M1IjGMDbX3PbbU/C47/bgHo=",
+			"checksumSHA1": "nJMqXi1PkAjUf/u1lTwX/3dS5Yo=",
 			"path": "github.com/dpb587/metalink/repository/source/git",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
-			"checksumSHA1": "zuOHm0B3CmNY7JPvTpL+UVa4UsI=",
+			"checksumSHA1": "Ii1RTvm5vNrlQH1DwOTM4L0H69I=",
+			"path": "github.com/dpb587/metalink/repository/source/http",
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
+		},
+		{
+			"checksumSHA1": "EsGYCQFYe9Ou3UCFyA9h4b2+YhY=",
 			"path": "github.com/dpb587/metalink/repository/source/s3",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
 		},
 		{
 			"path": "github.com/dpb587/metalink/repository/storage",
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "JETRc91GVd8sqHuNBIlSumBk+mI=",
+			"checksumSHA1": "i5ULKmJf2cPVcgpkXcD1Ds0+OPs=",
 			"path": "github.com/dpb587/metalink/storage",
-			"revision": "201e6a15cc853eb0dd64ab4a071886f46c220ecc",
-			"revisionTime": "2017-03-25T19:37:43Z"
+			"revision": "97abf85308eaa4b9e3ca23a074038d9ac80f7f40",
+			"revisionTime": "2017-04-13T01:38:06Z"
+		},
+		{
+			"checksumSHA1": "btTFi+NSOFrWn2PVujlX6VgnafY=",
+			"path": "github.com/jlaffaye/ftp",
+			"revision": "7b85eb4638a2c0473acefcfb929a98f879c15c86",
+			"revisionTime": "2017-03-04T12:34:31Z"
 		},
 		{
 			"checksumSHA1": "MNkKJyk2TazKMJYbal5wFHybpyA=",
