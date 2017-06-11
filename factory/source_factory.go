@@ -26,6 +26,6 @@ func getSourceFactory() source.Factory {
 	return sourceFactory
 }
 
-func GetSource(uri string) (source.Source, error) {
-	return getSourceFactory().Create(uri)
+func GetSource(uri string, options map[string]interface{}) (source.Source, error) {
+	return getSourceFactory().Create(uri, options)
 }

@@ -109,14 +109,24 @@ func getReaderSize(reader io.Reader) (size int64, err error) {
 			case "|0", "|1":
 				return
 			}
-			size = st.Size()
+			var pos int64
+			pos, err = v.Seek(0, 1) // SeekCurrent.
+			if err != nil {
+				return -1, err
+			}
+			size = st.Size() - pos
 		case *Object:
 			var st ObjectInfo
 			st, err = v.Stat()
 			if err != nil {
 				return
 			}
-			size = st.Size
+			var pos int64
+			pos, err = v.Seek(0, 1) // SeekCurrent.
+			if err != nil {
+				return -1, err
+			}
+			size = st.Size - pos
 		}
 	}
 	// Returns the size here.
@@ -143,7 +153,6 @@ func (a completedParts) Less(i, j int) bool { return a[i].PartNumber < a[j].Part
 // NOTE: Google Cloud Storage does not implement Amazon S3 Compatible multipart PUT.
 // So we fall back to single PUT operation with the maximum limit of 5GiB.
 //
-// NOTE: For anonymous requests Amazon S3 doesn't allow multipart upload. So we fall back to single PUT operation.
 func (c Client) PutObject(bucketName, objectName string, reader io.Reader, contentType string) (n int64, err error) {
 	return c.PutObjectWithProgress(bucketName, objectName, reader, contentType, nil)
 }
@@ -201,7 +210,7 @@ func (c Client) putObjectSingle(bucketName, objectName string, reader io.Reader,
 	hashAlgos := make(map[string]hash.Hash)
 	hashSums := make(map[string][]byte)
 	hashAlgos["md5"] = md5.New()
-	if c.signature.isV4() && !c.secure {
+	if c.overrideSignerType.IsV4() && !c.secure {
 		hashAlgos["sha256"] = sha256.New()
 	}
 

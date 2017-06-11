@@ -1,9 +1,10 @@
-package v
+package fileversion
 
 import (
 	"github.com/Masterminds/semver"
 	"github.com/dpb587/metalink/repository"
 	"github.com/dpb587/metalink/repository/filter"
+	"github.com/dpb587/metalink/repository/utility"
 )
 
 type Filter struct {
@@ -13,7 +14,7 @@ type Filter struct {
 var _ filter.Filter = Filter{}
 
 func CreateFilter(version string) (Filter, error) {
-	constraint, err := semver.NewConstraint(version)
+	constraint, err := semver.NewConstraint(utility.RewriteSemiSemVer(version))
 	if err != nil {
 		return Filter{}, err
 	}
@@ -25,7 +26,7 @@ func CreateFilter(version string) (Filter, error) {
 
 func (f Filter) IsTrue(meta4 repository.RepositoryMetalink) (bool, error) {
 	for _, file := range meta4.Metalink.Files {
-		version, err := semver.NewVersion(file.Version)
+		version, err := semver.NewVersion(utility.RewriteSemiSemVer(file.Version))
 		if err != nil {
 			return false, err
 		}

@@ -12,8 +12,11 @@ docker_dir=$PWD
 
 ( cd ..
 
-  go build -o $docker_dir/assets/in in/main.go
-  go build -o $docker_dir/assets/check check/main.go
+  go build -o $docker_dir/assets/in in/*
+  go build -o $docker_dir/assets/check check/*
+  go build -o $docker_dir/assets/out out/*
+
+  git rev-parse HEAD > $docker_dir/assets/version
 )
 
 docker build -t dpb587/metalink-repository-resource .

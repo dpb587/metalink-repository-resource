@@ -115,7 +115,7 @@ func (c Client) putObjectMultipartFromReadAt(bucketName, objectName string, read
 	close(uploadPartsCh)
 
 	// Receive each part number from the channel allowing three parallel uploads.
-	for w := 1; w <= 3; w++ {
+	for w := 1; w <= totalWorkers; w++ {
 		go func() {
 			// Read defaults to reading at 5MiB buffer.
 			readAtBuffer := make([]byte, optimalReadBufferSize)
@@ -146,7 +146,7 @@ func (c Client) putObjectMultipartFromReadAt(bucketName, objectName string, read
 				hashSums := make(map[string][]byte)
 				hashAlgos := make(map[string]hash.Hash)
 				hashAlgos["md5"] = md5.New()
-				if c.signature.isV4() && !c.secure {
+				if c.overrideSignerType.IsV4() && !c.secure {
 					hashAlgos["sha256"] = sha256.New()
 				}
 

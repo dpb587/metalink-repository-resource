@@ -45,10 +45,11 @@ type Entry struct {
 	Time time.Time
 }
 
-// response represent a data-connection
-type response struct {
-	conn net.Conn
-	c    *ServerConn
+// Response represents a data-connection
+type Response struct {
+	conn   net.Conn
+	c      *ServerConn
+	closed bool
 }
 
 // Connect is an alias to Dial, for backward compatibility
@@ -337,7 +338,7 @@ func (c *ServerConn) NameList(path string) (entries []string, err error) {
 		return
 	}
 
-	r := &response{conn, c}
+	r := &Response{conn: conn, c: c}
 	defer r.Close()
 
 	scanner := bufio.NewScanner(r)
@@ -368,7 +369,7 @@ func (c *ServerConn) List(path string) (entries []*Entry, err error) {
 		return
 	}
 
-	r := &response{conn, c}
+	r := &Response{conn: conn, c: c}
 	defer r.Close()
 
 	scanner := bufio.NewScanner(r)
@@ -431,7 +432,7 @@ func (c *ServerConn) FileSize(path string) (int64, error) {
 // FTP server.
 //
 // The returned ReadCloser must be closed to cleanup the FTP data connection.
-func (c *ServerConn) Retr(path string) (io.ReadCloser, error) {
+func (c *ServerConn) Retr(path string) (*Response, error) {
 	return c.RetrFrom(path, 0)
 }
 
@@ -439,13 +440,13 @@ func (c *ServerConn) Retr(path string) (io.ReadCloser, error) {
 // FTP server, the server will not send the offset first bytes of the file.
 //
 // The returned ReadCloser must be closed to cleanup the FTP data connection.
-func (c *ServerConn) RetrFrom(path string, offset uint64) (io.ReadCloser, error) {
+func (c *ServerConn) RetrFrom(path string, offset uint64) (*Response, error) {
 	conn, err := c.cmdDataConnFrom(offset, "RETR %s", path)
 	if err != nil {
 		return nil, err
 	}
 
-	return &response{conn, c}, nil
+	return &Response{conn: conn, c: c}, nil
 }
 
 // Stor issues a STOR FTP command to store a file to the remote FTP server.
@@ -531,16 +532,26 @@ func (c *ServerConn) Quit() error {
 }
 
 // Read implements the io.Reader interface on a FTP data connection.
-func (r *response) Read(buf []byte) (int, error) {
+func (r *Response) Read(buf []byte) (int, error) {
 	return r.conn.Read(buf)
 }
 
 // Close implements the io.Closer interface on a FTP data connection.
-func (r *response) Close() error {
+// After the first call, Close will do nothing and return nil.
+func (r *Response) Close() error {
+	if r.closed {
+		return nil
+	}
 	err := r.conn.Close()
 	_, _, err2 := r.c.conn.ReadResponse(StatusClosingDataConnection)
 	if err2 != nil {
 		err = err2
 	}
+	r.closed = true
 	return err
+}
+
+// SetDeadline sets the deadlines associated with the connection.
+func (r *Response) SetDeadline(t time.Time) error {
+	return r.conn.SetDeadline(t)
 }
