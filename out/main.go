@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/dpb587/metalink"
 	"github.com/dpb587/metalink-repository-resource/api"
@@ -20,7 +21,18 @@ func main() {
 		api.Fatal("out: bad stdin: parse error", err)
 	}
 
-	metalinkBytes, err := ioutil.ReadFile(request.Params.Metalink)
+	metalinkPaths, err := filepath.Glob(request.Params.Metalink)
+	if err != nil {
+		api.Fatal("out: bad metalink: globbing path", err)
+	} else if len(metalinkPaths) == 0 {
+		api.Fatal("out: bad metalink: path not found", err)
+	} else if len(metalinkPaths) > 1 {
+		api.Fatal("out: bad metalink: multiple paths found when one is expected", err)
+	}
+
+	metalinkPath := metalinkPaths[0]
+
+	metalinkBytes, err := ioutil.ReadFile(metalinkPath)
 	if err != nil {
 		api.Fatal("out: bad metalink: read error", err)
 	}
@@ -38,7 +50,7 @@ func main() {
 		api.Fatal("out: bad metalink: content error", errors.New("missing file version node"))
 	}
 
-	metalinkFile, err := os.OpenFile(request.Params.Metalink, os.O_RDONLY, 0700)
+	metalinkFile, err := os.OpenFile(metalinkPath, os.O_RDONLY, 0700)
 	if err != nil {
 		api.Fatal("out: version file: create", err)
 	}
