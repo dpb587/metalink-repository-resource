@@ -25,9 +25,9 @@ func main() {
 	if err != nil {
 		api.Fatal("out: bad metalink: globbing path", err)
 	} else if len(metalinkPaths) == 0 {
-		api.Fatal("out: bad metalink: path not found", err)
+		api.Fatal("out: bad metalink", errors.New("path not found"))
 	} else if len(metalinkPaths) > 1 {
-		api.Fatal("out: bad metalink: multiple paths found when one is expected", err)
+		api.Fatal("out: bad metalink", errors.New("multiple paths found when one is expected"))
 	}
 
 	metalinkPath := metalinkPaths[0]
