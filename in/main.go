@@ -68,6 +68,34 @@ func main() {
 	var byteCount uint64
 
 	for _, file := range metalinks[0].Metalink.Files {
+		var matched = true
+
+		if len(request.Source.IncludeFiles) > 0 {
+			matched = false
+
+			for _, pattern := range request.Source.IncludeFiles {
+				if match, _ := filepath.Match(pattern, file.Name); match {
+					matched = true
+
+					break
+				}
+			}
+		}
+
+		if len(request.Source.ExcludeFiles) > 0 {
+			for _, pattern := range request.Source.ExcludeFiles {
+				if match, _ := filepath.Match(pattern, file.Name); match {
+					matched = false
+
+					break
+				}
+			}
+		}
+
+		if !matched {
+			continue
+		}
+
 		if !request.Params.SkipDownload {
 			local, err := factory.GetOrigin(metalink.URL{URL: filepath.Join(destination, file.Name)})
 			if err != nil {
@@ -89,9 +117,8 @@ func main() {
 		}
 
 		byteCount = byteCount + file.Size
+		fileCount = fileCount + 1
 	}
-
-	fileCount = len(metalinks[0].Metalink.Files)
 
 	err = os.MkdirAll(filepath.Join(destination, ".resource"), 0700)
 	if err != nil {

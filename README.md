@@ -16,6 +16,8 @@ A [Concourse](https://concourse.ci) resource for managing versions/files in a [M
     * for s3 repositories
        * `access_key` - access key for private S3 endpoints
        * `secret_key` - secret key for private S3 endpoints
+ * `include_files` - a list of file globs to match when downloading a version's files (used by `in`)
+ * `exclude_files` - a list of file globs to skip when downloading a version's files (used by `in`)
 
 
 ## `check`

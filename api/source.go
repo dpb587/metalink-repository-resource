@@ -13,6 +13,9 @@ type Source struct {
 	SkipSignatureVerification bool   `json:"skip_signature_verification,omitempty"`
 	SignatureTrustStore       string `json:"signature_trust_store,omitempty"`
 
+	IncludeFiles []string `json:"include_files,omitempty"`
+	ExcludeFiles []string `json:"exclude_files,omitempty"`
+
 	Version string `json:"version,omitempty"`
 }
 
