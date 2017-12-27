@@ -74,9 +74,8 @@ func main() {
 				api.Fatal(fmt.Sprintf("in: bad file: %s", file.Name), err)
 			}
 
-			progress := pb.New64(int64(file.Size)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Second).SetWidth(80)
-			progress.ShowPercent = false
-			progress.Output = os.Stderr
+			progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
+			progress.SetWriter(os.Stderr)
 
 			verifier, err := factory.DynamicVerification.GetVerifier(file, request.Source.SkipHashVerification, request.Source.SkipSignatureVerification, request.Source.SignatureTrustStore)
 			if err != nil {

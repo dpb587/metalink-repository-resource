@@ -1,5 +1,6 @@
 /*
- * Minio Go Library for Amazon S3 Compatible Cloud Storage (C) 2015, 2016 Minio, Inc.
+ * Minio Go Library for Amazon S3 Compatible Cloud Storage
+ * Copyright 2015-2017 Minio, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +18,23 @@
 package minio
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
 	"github.com/minio/minio-go/pkg/policy"
+	"github.com/minio/minio-go/pkg/s3utils"
 )
 
 // GetBucketPolicy - get bucket policy at a given path.
 func (c Client) GetBucketPolicy(bucketName, objectPrefix string) (bucketPolicy policy.BucketPolicy, err error) {
 	// Input validation.
-	if err := isValidBucketName(bucketName); err != nil {
+	if err := s3utils.CheckValidBucketName(bucketName); err != nil {
 		return policy.BucketPolicyNone, err
 	}
-	if err := isValidObjectPrefix(objectPrefix); err != nil {
+	if err := s3utils.CheckValidObjectNamePrefix(objectPrefix); err != nil {
 		return policy.BucketPolicyNone, err
 	}
 	policyInfo, err := c.getBucketPolicy(bucketName)
@@ -48,10 +51,10 @@ func (c Client) GetBucketPolicy(bucketName, objectPrefix string) (bucketPolicy p
 // ListBucketPolicies - list all policies for a given prefix and all its children.
 func (c Client) ListBucketPolicies(bucketName, objectPrefix string) (bucketPolicies map[string]policy.BucketPolicy, err error) {
 	// Input validation.
-	if err := isValidBucketName(bucketName); err != nil {
+	if err := s3utils.CheckValidBucketName(bucketName); err != nil {
 		return map[string]policy.BucketPolicy{}, err
 	}
-	if err := isValidObjectPrefix(objectPrefix); err != nil {
+	if err := s3utils.CheckValidObjectNamePrefix(objectPrefix); err != nil {
 		return map[string]policy.BucketPolicy{}, err
 	}
 	policyInfo, err := c.getBucketPolicy(bucketName)
@@ -78,10 +81,10 @@ func (c Client) getBucketPolicy(bucketName string) (policy.BucketAccessPolicy, e
 	urlValues.Set("policy", "")
 
 	// Execute GET on bucket to list objects.
-	resp, err := c.executeMethod("GET", requestMetadata{
-		bucketName:         bucketName,
-		queryValues:        urlValues,
-		contentSHA256Bytes: emptySHA256,
+	resp, err := c.executeMethod(context.Background(), "GET", requestMetadata{
+		bucketName:       bucketName,
+		queryValues:      urlValues,
+		contentSHA256Hex: emptySHA256Hex,
 	})
 
 	defer closeResponse(resp)
