@@ -130,12 +130,12 @@ func main() {
 		api.Fatal("in: fs metadata: marshal metalink", err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(destination, ".resource", "metalink.meta4"), meta4bytes, 0744)
+	err = ioutil.WriteFile(filepath.Join(destination, ".resource", "metalink.meta4"), meta4bytes, 0644)
 	if err != nil {
-		api.Fatal("in: fs metadata: marshal metalink", err)
+		api.Fatal("in: fs metadata: metalink.meta4", err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(destination, ".resource", "version"), []byte(request.Version.Version), 0744)
+	err = ioutil.WriteFile(filepath.Join(destination, ".resource", "version"), []byte(request.Version.Version), 0644)
 	if err != nil {
 		api.Fatal("in: fs metadata: version", err)
 	}
