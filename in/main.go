@@ -97,6 +97,12 @@ func main() {
 		}
 
 		if !request.Params.SkipDownload {
+			if fileCount > 0 {
+				fmt.Fprintln(os.Stderr, "")
+			}
+
+			fmt.Fprintln(os.Stderr, file.Name)
+
 			local, err := factory.GetOrigin(metalink.URL{URL: filepath.Join(destination, file.Name)})
 			if err != nil {
 				api.Fatal(fmt.Sprintf("in: bad file: %s", file.Name), err)
