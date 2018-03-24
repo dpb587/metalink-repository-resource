@@ -18,12 +18,14 @@ func (r Request) ApplyFilter(filter *and.Filter) error {
 		return err
 	}
 
-	addFilter, err := fileversion.CreateFilter(r.Version.Version)
-	if err != nil {
-		return err
-	}
+	if r.Version.Version != "" {
+		addFilter, err := fileversion.CreateFilter(r.Version.Version)
+		if err != nil {
+			return err
+		}
 
-	filter.Add(addFilter)
+		filter.Add(addFilter)
+	}
 
 	return nil
 }
