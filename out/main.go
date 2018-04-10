@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/dpb587/metalink"
@@ -62,7 +62,7 @@ func main() {
 	if request.Params.Rename != "" {
 		metalinkName = request.Params.Rename
 	} else {
-		metalinkName = path.Base(metalinkFile.Name())
+		metalinkName = fmt.Sprintf("v%s.meta4", meta4.Files[0].Version)
 	}
 
 	options := request.Source.Options
