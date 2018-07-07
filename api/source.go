@@ -13,10 +13,19 @@ type Source struct {
 	SkipSignatureVerification bool   `json:"skip_signature_verification,omitempty"`
 	SignatureTrustStore       string `json:"signature_trust_store,omitempty"`
 
+	MirrorFiles []MirrorFileParams `json:"mirror_files,omitempty"`
+
 	IncludeFiles []string `json:"include_files,omitempty"`
 	ExcludeFiles []string `json:"exclude_files,omitempty"`
 
 	Version string `json:"version,omitempty"`
+}
+
+type MirrorFileParams struct {
+	Destination string            `json:"destination"`
+	Location    string            `json:"location,omitempty"`
+	Priority    *uint             `json:"priority,omitempty"`
+	Env         map[string]string `json:"env,omitempty"`
 }
 
 func (s Source) ApplyFilter(filter *and.Filter) error {

@@ -131,7 +131,7 @@ func main() {
 		api.Fatal("in: fs metadata: mkdir", err)
 	}
 
-	meta4bytes, err := metalink.Marshal(metalinks[0].Metalink)
+	meta4bytes, err := metalink.MarshalXML(metalinks[0].Metalink)
 	if err != nil {
 		api.Fatal("in: fs metadata: marshal metalink", err)
 	}
