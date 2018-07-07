@@ -1,7 +1,6 @@
 package git
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -10,8 +9,7 @@ import (
 
 	"github.com/dpb587/metalink/repository/source"
 	minio "github.com/minio/minio-go"
-
-	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/pkg/errors"
 )
 
 // http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
@@ -32,7 +30,7 @@ func (f Factory) Schemes() []string {
 func (f Factory) Create(uri string, options map[string]interface{}) (source.Source, error) {
 	parsed, err := url.Parse(uri)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Parsing URI")
+		return nil, errors.Wrap(err, "Parsing URI")
 	}
 
 	secure := true
@@ -76,7 +74,7 @@ func (f Factory) Create(uri string, options map[string]interface{}) (source.Sour
 
 	client, err := minio.New(minioEndpoint, accessKey, secretKey, secure)
 	if err != nil {
-		return nil, bosherr.WrapError(err, "Creating s3 client")
+		return nil, errors.Wrap(err, "Creating s3 client")
 	}
 
 	return NewSource(uri, client, secure, split[1], split[2]), nil
