@@ -87,6 +87,13 @@ func main() {
 
 	if request.Params.Rename != "" {
 		metalinkName = request.Params.Rename
+	} else if request.Params.RenameFromFile != "" {
+		var metalinkNameBytes []byte
+		metalinkNameBytes, err = ioutil.ReadFile(metalinkPath)
+		if err != nil {
+			api.Fatal("out: could not open rename file: read error", err)
+		}
+		metalinkName = string(metalinkNameBytes)
 	} else {
 		metalinkName = fmt.Sprintf("v%s.meta4", meta4.Files[0].Version)
 	}
