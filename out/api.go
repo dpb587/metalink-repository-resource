@@ -10,11 +10,12 @@ type Request struct {
 }
 
 type Params struct {
-	Metalink string                 `json:"metalink"`
-	Files    []string               `json:"files"`
-	Version  string                 `json:"version"`
-	Rename   string                 `json:"rename,omitempty"`
-	Options  map[string]interface{} `json:"options,omitempty"`
+	Metalink       string                 `json:"metalink"`
+	Files          []string               `json:"files"`
+	Version        string                 `json:"version"`
+	Rename         string                 `json:"rename,omitempty"`
+	RenameFromFile string                 `json:"rename_from_file,omitempty"`
+	Options        map[string]interface{} `json:"options,omitempty"`
 }
 
 type Response struct {
