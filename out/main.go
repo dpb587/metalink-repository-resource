@@ -89,7 +89,7 @@ func main() {
 		metalinkName = request.Params.Rename
 	} else if request.Params.RenameFromFile != "" {
 		var metalinkNameBytes []byte
-		metalinkNameBytes, err = ioutil.ReadFile(metalinkPath)
+		metalinkNameBytes, err = ioutil.ReadFile(request.Params.RenameFromFile)
 		if err != nil {
 			api.Fatal("out: could not open rename file: read error", err)
 		}
