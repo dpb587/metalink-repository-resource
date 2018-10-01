@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,11 +8,11 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/cheggaaa/pb"
 	"github.com/dpb587/metalink"
+	"github.com/dpb587/metalink/template"
 	"github.com/dpb587/metalink-repository-resource/api"
 	"github.com/dpb587/metalink-repository-resource/factory"
 	"github.com/dpb587/metalink/verification"
@@ -147,13 +146,6 @@ func createMetalink(request Request) (string, error) {
 				Hashes:  []metalink.Hash{},
 			}
 
-			fileTmplVars := struct {
-				Name, Version, SHA1, SHA256, SHA512, MD5 string
-			}{
-				Name:    file.Name,
-				Version: file.Version,
-			}
-
 			local, err := factory.GetOrigin(metalink.URL{URL: fmt.Sprintf("file://%s", filePath)})
 			if err != nil {
 				return "", errors.Wrap(err, "loading local file")
@@ -183,28 +175,13 @@ func createMetalink(request Request) (string, error) {
 				}
 			}
 
-			for _, hash := range file.Hashes {
-				switch hash.Type {
-				case "sha-512":
-					fileTmplVars.SHA512 = hash.Hash
-				case "sha-256":
-					fileTmplVars.SHA256 = hash.Hash
-				case "sha-1":
-					fileTmplVars.SHA1 = hash.Hash
-				case "md5":
-					fileTmplVars.MD5 = hash.Hash
-				}
-			}
-
 			for _, uploadParams := range request.Source.MirrorFiles {
-				remoteURLTmpl, err := template.New("remote").Parse(uploadParams.Destination)
+				remoteURLTmpl, err := template.New(uploadParams.Destination)
 				if err != nil {
 					return "", errors.Wrap(err, "parsing upload destination")
 				}
 
-				remoteURLBytes := &bytes.Buffer{}
-
-				err = remoteURLTmpl.Execute(remoteURLBytes, fileTmplVars)
+				remoteURL, err := remoteURLTmpl.ExecuteString(file)
 				if err != nil {
 					return "", errors.Wrap(err, "generating upload destination")
 				}
@@ -214,9 +191,9 @@ func createMetalink(request Request) (string, error) {
 					os.Setenv(k, v)
 				}
 
-				fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURLBytes.String())
+				fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
 
-				remote, err := factory.GetOrigin(metalink.URL{URL: remoteURLBytes.String()})
+				remote, err := factory.GetOrigin(metalink.URL{URL: remoteURL})
 				if err != nil {
 					return "", errors.Wrap(err, "loading upload destination")
 				}

@@ -47,7 +47,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a20e1cc133c074d20e8677bed5e690c8940cc9d5ce56d881b3408954f8885184"
+  digest = "1:080be4735e1dfff7453fef8e6fb230dada7f239cf8d71c4c9f6de3686dbf1546"
   name = "github.com/dpb587/metalink"
   packages = [
     ".",
@@ -73,6 +73,7 @@
     "repository/source/http",
     "repository/source/s3",
     "repository/utility",
+    "template",
     "transfer",
     "verification",
     "verification/hash",
@@ -297,6 +298,7 @@
     "github.com/dpb587/metalink/repository/source/http",
     "github.com/dpb587/metalink/repository/source/s3",
     "github.com/dpb587/metalink/repository/utility",
+    "github.com/dpb587/metalink/template",
     "github.com/dpb587/metalink/transfer",
     "github.com/dpb587/metalink/verification",
     "github.com/dpb587/metalink/verification/hash",
