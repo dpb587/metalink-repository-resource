@@ -165,10 +165,10 @@ func createMetalink(request Request) (string, error) {
 			}
 
 			hashmap := []verification.Signer{
-				hash.SHA512Verification,
-				hash.SHA256Verification,
-				hash.SHA1Verification,
-				hash.MD5Verification,
+				hash.SHA512SignerVerifier,
+				hash.SHA256SignerVerifier,
+				hash.SHA1SignerVerifier,
+				hash.MD5SignerVerifier,
 			}
 
 			for _, hasher := range hashmap {

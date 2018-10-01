@@ -15,6 +15,7 @@ import (
 	"github.com/dpb587/metalink-repository-resource/factory"
 	filter_and "github.com/dpb587/metalink/repository/filter/and"
 	"github.com/dpb587/metalink/transfer"
+	"github.com/dpb587/metalink/verification"
 )
 
 func main() {
@@ -22,9 +23,12 @@ func main() {
 		api.Fatal("in: bad invocation", fmt.Errorf("%s DESTINATION-DIR", os.Args[0]))
 	}
 
-	destination := os.Args[1]
+	destination, err := filepath.Abs(os.Args[1])
+	if err != nil {
+		api.Fatal("in: bad destination", err)
+	}
 
-	err := os.MkdirAll(destination, 0755)
+	err = os.MkdirAll(destination, 0755)
 	if err != nil {
 		api.Fatal("in: bad destination", err)
 	}
@@ -116,7 +120,9 @@ func main() {
 				api.Fatal(fmt.Sprintf("in: bad file verifier: %s", file.Name), err)
 			}
 
-			err = transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), factory.GetURLLoaderFactory(), verifier).TransferFile(file, local, progress)
+			downloader := transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), factory.GetURLLoaderFactory(), verifier)
+			
+			err = downloader.TransferFile(file, local, progress, verification.NewSimpleVerificationResultReporter(os.Stderr))
 			if err != nil {
 				api.Fatal(fmt.Sprintf("in: bad file transfer: %s", file.Name), err)
 			}

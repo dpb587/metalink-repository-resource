@@ -2,41 +2,52 @@
 
 
 [[projects]]
+  digest = "1:a26f8da48b22e6176c1c6a2459904bb30bd0c49ada04b2963c2c3a203e81a620"
   name = "github.com/Masterminds/semver"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "c7af12943936e8c39859482e61f0574c2fd7fc75"
   version = "v1.4.2"
 
 [[projects]]
+  digest = "1:69b95d47eef70cba62af2aa3d33bd5f9ffe9fa0be66d79d79150c38796c6eac1"
   name = "github.com/bmatcuk/doublestar"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "b3608229437ba4dc33dae64d56a79a2a73f1f6b2"
   version = "v1.0.9"
 
 [[projects]]
   branch = "master"
+  digest = "1:58927c45bfdcd6550e5f1ab008eeeb6951474a232afa1dc690583f26c5f92cbd"
   name = "github.com/charlievieth/fs"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "7dc373669fa10ddf827c37c595dee30a2f001be9"
 
 [[projects]]
+  digest = "1:ea07e3ce599a5323383b0809c413d4532773741206c8c2ec38cb789408ad074e"
   name = "github.com/cheggaaa/pb"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "c112833d014c77e8bde723fd0158e3156951639f"
   version = "v2.0.6"
 
 [[projects]]
   branch = "master"
+  digest = "1:6b48145085df4401bc70473cc4da1a3b9f98a79232fe59855083eaaea90567c5"
   name = "github.com/cloudfoundry/bosh-utils"
   packages = [
     "errors",
     "logger",
-    "system"
+    "system",
   ]
+  pruneopts = "NUT"
   revision = "b082aa9a81950fa8df1a969575319417b1e073f4"
 
 [[projects]]
   branch = "master"
+  digest = "1:a20e1cc133c074d20e8677bed5e690c8940cc9d5ce56d881b3408954f8885184"
   name = "github.com/dpb587/metalink"
   packages = [
     ".",
@@ -65,41 +76,53 @@
     "transfer",
     "verification",
     "verification/hash",
-    "verification/signature"
+    "verification/signature",
   ]
-  revision = "06a0c58a4575904366e8fc0c3dd462c26149e9dd"
+  pruneopts = "NUT"
+  revision = "07ef3f34e8062f21a9f24c419187409bc548f5ad"
 
 [[projects]]
   branch = "master"
+  digest = "1:b7ffca49e9cfd3dfb04a8e0a59347708c6f78f68476a32c5e0a0edca5d1b258c"
   name = "github.com/dustin/go-humanize"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "02af3965c54e8cacf948b97fef38925c4120652c"
 
 [[projects]]
+  digest = "1:30b09d75e7e16119e85020374df10ea06f263c9bdff72afdc1522838b9609375"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
   version = "v1.37.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:7fa88fe51377cfd7a66a8258f1aaca67f5f37cbc8be7d1d920da967dc955b9d7"
   name = "github.com/jlaffaye/ftp"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "2403248fa8cc9f7909862627aa7337f13f8e0bf1"
 
 [[projects]]
+  digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:bc4f7eec3b7be8c6cb1f0af6c1e3333d5bb71072951aaaae2f05067b0803f287"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:efd313eac4d24fb4334c367e4508481d357329a27580367364b75595e13466c5"
   name = "github.com/minio/minio-go"
   packages = [
     ".",
@@ -107,31 +130,39 @@
     "pkg/encrypt",
     "pkg/s3signer",
     "pkg/s3utils",
-    "pkg/set"
+    "pkg/set",
   ]
+  pruneopts = "NUT"
   revision = "70799fe8dae6ecfb6c7d7e9e048fce27f23a1992"
   version = "v6.0.5"
 
 [[projects]]
   branch = "master"
+  digest = "1:9db29b604bd78452d167abed82386ddd2f93973df3841896fb6ab8aff936f1d6"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
 
 [[projects]]
+  digest = "1:5cf3f025cbee5951a4ee961de067c8a89fc95a5adabead774f82822efabab121"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:6989062eb7ccf25cf38bf4fe3dba097ee209f896cda42cefdca3927047bef7b6"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
   version = "v1.0.5"
 
 [[projects]]
   branch = "master"
+  digest = "1:a49c202c9a61e142e37dea31bfbd09cf4d2ad2fc4d964a543df0978a029a9219"
   name = "golang.org/x/crypto"
   packages = [
     "argon2",
@@ -143,30 +174,36 @@
     "openpgp/errors",
     "openpgp/packet",
     "openpgp/s2k",
-    "ssh/terminal"
+    "ssh/terminal",
   ]
+  pruneopts = "NUT"
   revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
 [[projects]]
   branch = "master"
+  digest = "1:d85c27d6ba6e4025225eed536f3ff7c5455d0857a0585c80d7510f7eee6fc68e"
   name = "golang.org/x/net"
   packages = [
     "http/httpguts",
-    "idna"
+    "idna",
   ]
+  pruneopts = "NUT"
   revision = "32a936f46389aa10549d60bd7833e54b01685d09"
 
 [[projects]]
   branch = "master"
+  digest = "1:286c1de66c5028ddcc80ba849ae86fbf800feb553e1bd776055e652117e1c3c0"
   name = "golang.org/x/sys"
   packages = [
     "cpu",
     "unix",
-    "windows"
+    "windows",
   ]
+  pruneopts = "NUT"
   revision = "3c6ecd8f22c6f40fbeec94c000a069d7d87c7624"
 
 [[projects]]
+  digest = "1:e7071ed636b5422cc51c0e3a6cebc229d6c9fffc528814b519a980641422d619"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -182,50 +219,88 @@
     "unicode/bidi",
     "unicode/cldr",
     "unicode/norm",
-    "unicode/rangetable"
+    "unicode/rangetable",
   ]
+  pruneopts = "NUT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:dde06cba636162cd41df016518e771b1f1e156edadde221e04bd0c35f0564488"
   name = "gopkg.in/VividCortex/ewma.v1"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "b24eb346a94c3ba12c1da1e564dbac1b498a77ce"
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:256938e7d43c73bd5e7bb97dd281d1ebe294b2928403ee1fbec96249915d1150"
   name = "gopkg.in/cheggaaa/pb.v2"
   packages = ["termutil"]
+  pruneopts = "NUT"
   revision = "c112833d014c77e8bde723fd0158e3156951639f"
   version = "v2.0.6"
 
 [[projects]]
+  digest = "1:ade392a843b2035effb4b4a2efa2c3bab3eb29b992e98bacf9c898b0ecb54e45"
   name = "gopkg.in/fatih/color.v1"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
   version = "v1.7.0"
 
 [[projects]]
+  digest = "1:08c231ec84231a7e23d67e4b58f975e1423695a32467a362ee55a803f9de8061"
   name = "gopkg.in/mattn/go-colorable.v0"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:bc4f7eec3b7be8c6cb1f0af6c1e3333d5bb71072951aaaae2f05067b0803f287"
   name = "gopkg.in/mattn/go-isatty.v0"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:cb591533458f6eb6e2c1065ff3eac6b50263d7847deb23fc9f79b25bc608970e"
   name = "gopkg.in/mattn/go-runewidth.v0"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
   version = "v0.0.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7b106e0670fc65084ddd0e25f13d0b737b94fa6944e26f4998d5099f401a0230"
+  input-imports = [
+    "github.com/cheggaaa/pb",
+    "github.com/cloudfoundry/bosh-utils/logger",
+    "github.com/cloudfoundry/bosh-utils/system",
+    "github.com/dpb587/metalink",
+    "github.com/dpb587/metalink/cli/verification",
+    "github.com/dpb587/metalink/file",
+    "github.com/dpb587/metalink/file/metaurl",
+    "github.com/dpb587/metalink/file/url",
+    "github.com/dpb587/metalink/file/url/defaultloader",
+    "github.com/dpb587/metalink/repository/filter/and",
+    "github.com/dpb587/metalink/repository/filter/fileversion",
+    "github.com/dpb587/metalink/repository/sorter",
+    "github.com/dpb587/metalink/repository/sorter/fileversion",
+    "github.com/dpb587/metalink/repository/source",
+    "github.com/dpb587/metalink/repository/source/factory",
+    "github.com/dpb587/metalink/repository/source/fs",
+    "github.com/dpb587/metalink/repository/source/git",
+    "github.com/dpb587/metalink/repository/source/http",
+    "github.com/dpb587/metalink/repository/source/s3",
+    "github.com/dpb587/metalink/repository/utility",
+    "github.com/dpb587/metalink/transfer",
+    "github.com/dpb587/metalink/verification",
+    "github.com/dpb587/metalink/verification/hash",
+    "github.com/pkg/errors",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
