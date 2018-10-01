@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,11 +9,12 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/cheggaaa/pb"
 	"github.com/dpb587/metalink"
-	"github.com/dpb587/metalink/template"
+	metalinktemplate "github.com/dpb587/metalink/template"
 	"github.com/dpb587/metalink-repository-resource/api"
 	"github.com/dpb587/metalink-repository-resource/factory"
 	"github.com/dpb587/metalink/verification"
@@ -94,8 +96,24 @@ func main() {
 		}
 		metalinkName = string(metalinkNameBytes)
 	} else {
-		metalinkName = fmt.Sprintf("v%s.meta4", meta4.Files[0].Version)
+		metalinkName = "v{{ .Version }}.meta4"
 	}
+
+	metalinkNameTmpl, err := template.New("metalink").Parse(metalinkName)
+	if err != nil {
+		api.Fatal("out: parsing metalink name", err)
+	}
+
+	metalinkNameBytes := &bytes.Buffer{}
+
+	err = metalinkNameTmpl.Execute(metalinkNameBytes, map[string]string{
+		"Version": meta4.Files[0].Version,
+	})
+	if err != nil {
+		api.Fatal("out: executing metalink name template", err)
+	}
+
+	metalinkName = metalinkNameBytes.String()
 
 	options := request.Source.Options
 
@@ -176,7 +194,7 @@ func createMetalink(request Request) (string, error) {
 			}
 
 			for _, uploadParams := range request.Source.MirrorFiles {
-				remoteURLTmpl, err := template.New(uploadParams.Destination)
+				remoteURLTmpl, err := metalinktemplate.New(uploadParams.Destination)
 				if err != nil {
 					return "", errors.Wrap(err, "parsing upload destination")
 				}

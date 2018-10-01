@@ -56,7 +56,7 @@ Parameters:
  * `metalink` - path to the metalink file (one of `metalink` or `files` must be configured)
  * `files` - a list of glob paths for files to create a metalink from (one of `metalink` or `files` must be configured; requires `version`)
  * `version` - path to a file with the version number (only effective with `files`)
- * `rename` - publish the metalink file with a different file name
+ * `rename` - publish the metalink file with a different file name (templated; `Version`)
  * `rename_from_file` - path to a file whose content is the metalink file name (alternative to `rename`)
  * `options` - a hash of supported options, depending on the repository type
     * for git repositories
