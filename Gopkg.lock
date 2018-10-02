@@ -47,7 +47,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:080be4735e1dfff7453fef8e6fb230dada7f239cf8d71c4c9f6de3686dbf1546"
+  digest = "1:7f6927c20c123b52417e7eb031d85becf682f1bfecba5cd13754cd212be1100d"
   name = "github.com/dpb587/metalink"
   packages = [
     ".",
@@ -55,11 +55,11 @@
     "file",
     "file/metaurl",
     "file/url",
-    "file/url/defaultloader",
     "file/url/file",
     "file/url/ftp",
     "file/url/http",
     "file/url/s3",
+    "file/url/urlutil",
     "repository",
     "repository/filter",
     "repository/filter/and",
@@ -80,7 +80,7 @@
     "verification/signature",
   ]
   pruneopts = "NUT"
-  revision = "07ef3f34e8062f21a9f24c419187409bc548f5ad"
+  revision = "194fe2601a6df077d94cb31ff7d3fbe481b6ed84"
 
 [[projects]]
   branch = "master"
@@ -286,7 +286,11 @@
     "github.com/dpb587/metalink/file",
     "github.com/dpb587/metalink/file/metaurl",
     "github.com/dpb587/metalink/file/url",
-    "github.com/dpb587/metalink/file/url/defaultloader",
+    "github.com/dpb587/metalink/file/url/file",
+    "github.com/dpb587/metalink/file/url/ftp",
+    "github.com/dpb587/metalink/file/url/http",
+    "github.com/dpb587/metalink/file/url/s3",
+    "github.com/dpb587/metalink/file/url/urlutil",
     "github.com/dpb587/metalink/repository/filter/and",
     "github.com/dpb587/metalink/repository/filter/fileversion",
     "github.com/dpb587/metalink/repository/sorter",

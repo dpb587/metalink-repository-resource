@@ -68,6 +68,8 @@ func main() {
 		api.Fatal("in: too much to do", errors.New("multiple matches found"))
 	}
 
+	urlLoader := factory.GetURLLoader(request.Source.URLHandlers)
+
 	var fileCount int
 	var byteCount uint64
 
@@ -107,7 +109,7 @@ func main() {
 
 			fmt.Fprintln(os.Stderr, file.Name)
 
-			local, err := factory.GetOrigin(metalink.URL{URL: filepath.Join(destination, file.Name)})
+			local, err := urlLoader.LoadURL(metalink.URL{URL: filepath.Join(destination, file.Name)})
 			if err != nil {
 				api.Fatal(fmt.Sprintf("in: bad file: %s", file.Name), err)
 			}
@@ -120,8 +122,8 @@ func main() {
 				api.Fatal(fmt.Sprintf("in: bad file verifier: %s", file.Name), err)
 			}
 
-			downloader := transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), factory.GetURLLoaderFactory(), verifier)
-			
+			downloader := transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), urlLoader, verifier)
+
 			err = downloader.TransferFile(file, local, progress, verification.NewSimpleVerificationResultReporter(os.Stderr))
 			if err != nil {
 				api.Fatal(fmt.Sprintf("in: bad file transfer: %s", file.Name), err)

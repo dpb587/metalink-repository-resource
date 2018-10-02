@@ -1,16 +1,68 @@
 package factory
 
 import (
-	"github.com/dpb587/metalink"
-	"github.com/dpb587/metalink/file"
+	"fmt"
+
+	fileurl "github.com/dpb587/metalink/file/url/file"
+	ftpurl "github.com/dpb587/metalink/file/url/ftp"
+	httpurl "github.com/dpb587/metalink/file/url/http"
+	s3url "github.com/dpb587/metalink/file/url/s3"
+	"github.com/dpb587/metalink/file/url/urlutil"
 	"github.com/dpb587/metalink/file/url"
-	"github.com/dpb587/metalink/file/url/defaultloader"
+	"github.com/dpb587/metalink-repository-resource/api"
 )
 
-func GetURLLoaderFactory() url.Loader {
-	return defaultloader.New()
-}
+func GetURLLoader(handlers []api.HandlerSource) url.Loader {
+	loader := url.NewMultiLoader()
 
-func GetOrigin(ref metalink.URL) (file.Reference, error) {
-	return GetURLLoaderFactory().Load(ref)
+	for _, handlerSource := range handlers {
+		var handlerLoader url.Loader
+
+		switch handlerSource.Type {
+		case "s3":
+			opts := s3url.Options{}
+
+			if val, ok := handlerSource.Options["access_key"]; ok {
+				valStr, ok := val.(string)
+				if !ok {
+					panic("unsupported handler option: s3: access_key: expected string")
+				}
+
+				opts.AccessKey = valStr
+			}
+
+			if val, ok := handlerSource.Options["secret_key"]; ok {
+				valStr, ok := val.(string)
+				if !ok {
+					panic("unsupported handler option: s3: secret_key: expected string")
+				}
+
+				opts.SecretKey = valStr
+			}
+
+			handlerLoader = s3url.NewLoader(opts)
+		default:
+			panic(fmt.Errorf("unsupported handler: %s", handlerSource.Type))
+		}
+
+		if len(handlerSource.Include) > 0 || len(handlerSource.Exclude) > 0 {
+			handlerLoader = urlutil.NewFilteredLoader(
+				handlerLoader,
+				handlerSource.Include.AsRegexp(),
+				handlerSource.Exclude.AsRegexp(),
+			)
+		}
+
+		loader.Add(handlerLoader)
+	}
+
+	// defaults
+	file := fileurl.NewLoader()
+	loader.Add(file)
+	loader.Add(ftpurl.Loader{})
+	loader.Add(httpurl.Loader{})
+	loader.Add(s3url.NewLoader(s3url.Options{}))
+	loader.Add(urlutil.NewEmptySchemeLoader(file))
+
+	return loader
 }

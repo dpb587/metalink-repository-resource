@@ -6,10 +6,10 @@ import (
 	"github.com/dpb587/metalink/file/metaurl"
 )
 
-func GetMetaURLLoaderFactory() *metaurl.LoaderFactory {
-	return metaurl.NewLoaderFactory()
+func GetMetaURLLoaderFactory() metaurl.Loader {
+	return metaurl.NewMultiLoader()
 }
 
 func GetOriginURL(ref metalink.MetaURL) (file.Reference, error) {
-	return GetMetaURLLoaderFactory().Load(ref)
+	return GetMetaURLLoaderFactory().LoadMetaURL(ref)
 }

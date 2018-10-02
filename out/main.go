@@ -35,6 +35,8 @@ func main() {
 		api.Fatal("out: bad stdin: parse error", err)
 	}
 
+	api.MigrateSource(&request.Source)
+
 	var metalinkPath string
 
 	if len(request.Params.Files) > 0 {
@@ -151,6 +153,8 @@ func createMetalink(request Request) (string, error) {
 
 	version := strings.TrimSpace(string(versionBytes))
 
+	urlLoader := factory.GetURLLoader(request.Source.URLHandlers)
+
 	for _, paramFile := range request.Params.Files {
 		filePaths, err := filepath.Glob(filepath.Join(os.Args[1], paramFile))
 		if err != nil {
@@ -164,7 +168,7 @@ func createMetalink(request Request) (string, error) {
 				Hashes:  []metalink.Hash{},
 			}
 
-			local, err := factory.GetOrigin(metalink.URL{URL: fmt.Sprintf("file://%s", filePath)})
+			local, err := urlLoader.LoadURL(metalink.URL{URL: fmt.Sprintf("file://%s", filePath)})
 			if err != nil {
 				return "", errors.Wrap(err, "loading local file")
 			}
@@ -204,14 +208,9 @@ func createMetalink(request Request) (string, error) {
 					return "", errors.Wrap(err, "generating upload destination")
 				}
 
-				for k, v := range uploadParams.Env {
-					// TODO unset/revert after?
-					os.Setenv(k, v)
-				}
-
 				fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
 
-				remote, err := factory.GetOrigin(metalink.URL{URL: remoteURL})
+				remote, err := urlLoader.LoadURL(metalink.URL{URL: remoteURL})
 				if err != nil {
 					return "", errors.Wrap(err, "loading upload destination")
 				}
@@ -222,11 +221,11 @@ func createMetalink(request Request) (string, error) {
 				progress.Start()
 
 				err = remote.WriteFrom(local, progress)
+				progress.Finish()
+
 				if err != nil {
 					return "", errors.Wrap(err, "uploading")
 				}
-
-				progress.Finish()
 
 				file.URLs = append(
 					file.URLs,

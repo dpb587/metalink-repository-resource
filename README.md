@@ -18,11 +18,18 @@ A [Concourse](https://concourse.ci) resource for managing versions/files in a [M
        * `secret_key` - secret key for private S3 endpoints
  * `include_files` - a list of file globs to match when downloading a version's files (used by `in`)
  * `exclude_files` - a list of file globs to skip when downloading a version's files (used by `in`)
+ * `url_handlers` - a list of URL handlers for custom download/upload configurations
+    * **`type`** - handler type (i.e. `s3`)
+    * `include` - a list of URIs that should use this handler (regex'd)
+    * `exclude` - a list of URIs that should avoid this handler (regex'd)
+    * `options` - a hash of supported options, depending on `type`
+       * for `s3`:
+          * `access_key` - access key for private S3 endpoints
+          * `secret_key` - secret key for private S3 endpoints
  * `mirror_files` - a list of mirror configurations for mirroring files (used by `out`)
     * **`destination`** - the mirror URI for uploading files (templated; `Name`, `Version`, `SHA1`, `SHA256`, `SHA512`, `MD5`)
     * `location` - the ISO3166-1 alpha-2 country code for the geographical location (embedded in the metalink)
     * `priority` - a priority for the file (embedded in the metalink)
-    * `env` - environment variables for credentials used when uploading the file
 
 
 ## `check`
