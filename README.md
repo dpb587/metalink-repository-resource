@@ -32,7 +32,9 @@ A [Concourse](https://concourse.ci) resource for managing versions/files in a [M
     * `priority` - a priority for the file (embedded in the metalink)
 
 
-## `check`
+## Operations
+
+### `check`
 
 Check for new versions in the repository.
 
@@ -41,7 +43,7 @@ Metadata:
  * `version` - semantic version (e.g. `4.1.2`)
 
 
-## `in`
+### `in`
 
 Download and verify the referenced file(s).
 
@@ -54,7 +56,7 @@ Parameters:
  * `skip_download` - do not download blobs (only `metalink.meta4` and `version` will be available)
 
 
-## `out`
+### `out`
 
 Publish a metalink file to the repository.
 
@@ -69,6 +71,47 @@ Parameters:
     * for git repositories
        * `author_name`, `author_email` - the commit author
        * `message` - the commit message
+
+
+## Usage
+
+
+To use this resource type, you should configure it in the [`resource_types`](https://concourse-ci.org/resource-types.html) section of your pipeline.
+
+    - name: metalink-repository
+      type: docker-image
+      source:
+        repository: dpb587/metalink-repository-resource
+
+
+### URL Credentials
+
+When working with authenticated buckets (for either upload or download), configure the `url_handlers` option of the resource:
+
+    url_handlers:
+    - type: s3
+      options:
+        access_key: AKIAA1B2C3...
+        secret_key: a1b2c3d4e5...
+
+When using multiple URLs which require different configurations, use the `include` or `exclude` options to restrict usage:
+
+    url_handlers:
+    - type: s3
+      include:
+      - s3://[^/]+/org1-bucket-name
+      options:
+        access_key: AKIAA1B2C3...
+        secret_key: a1b2c3d4e5...
+    - type: s3
+      include:
+      - s3://[^/]+/org2-bucket-name
+      options:
+        access_key: AKIAB2C3D4...
+        secret_key: b2c3d4e5f6...
+		mirror_files:
+    - destination: s3://s3-external-1.amazonaws.com/org1-bucket-name/my-private-blobs/{{.Version}}/{{.Name}}
+    - destination: s3://s3-external-1.amazonaws.com/org2-bucket-name/my-private-blobs/{{.Version}}/{{.Name}}
 
 
 ## License
