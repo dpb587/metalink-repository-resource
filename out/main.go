@@ -208,23 +208,44 @@ func createMetalink(request Request) (string, error) {
 					return "", errors.Wrap(err, "generating upload destination")
 				}
 
-				fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
+				var uri string
+				var uploadError error
 
-				remote, err := urlLoader.LoadURL(metalink.URL{URL: remoteURL})
-				if err != nil {
-					return "", errors.Wrap(err, "loading upload destination")
+				for retry := 1; retry <= 3; retry ++ {
+					uploadError = nil
+
+					if retry > 1 {
+						fmt.Fprintf(os.Stderr, "\nretrying (attempt #%d)...\n", retry)
+					}
+
+					fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
+
+					remote, err := urlLoader.LoadURL(metalink.URL{URL: remoteURL})
+					if err != nil {
+						return "", errors.Wrap(err, "loading upload destination")
+					}
+
+					uri = remote.ReaderURI()
+
+					progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
+					progress.Start()
+
+					err = remote.WriteFrom(local, progress)
+					progress.Finish()
+
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "uploading failed: %v\n", err)
+
+						uploadError = err
+
+						continue
+					}
+
+					break
 				}
 
-				uri := remote.ReaderURI()
-
-				progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
-				progress.Start()
-
-				err = remote.WriteFrom(local, progress)
-				progress.Finish()
-
-				if err != nil {
-					return "", errors.Wrap(err, "uploading")
+				if uploadError != nil {
+					return "", errors.Wrap(uploadError, "uploading")
 				}
 
 				file.URLs = append(
