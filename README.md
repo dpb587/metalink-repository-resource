@@ -86,7 +86,7 @@ To use this resource type, you should configure it in the [`resource_types`](htt
 
 ### URL Credentials
 
-When working with authenticated buckets (for either upload or download), configure the `url_handlers` option of the resource:
+When working with authenticated URLs (for either upload or download), configure the `url_handlers` option of the resource:
 
     url_handlers:
     - type: s3
@@ -99,13 +99,13 @@ When using multiple URLs which require different configurations, use the `includ
     url_handlers:
     - type: s3
       include:
-      - s3://[^/]+/org1-bucket-name
+      - s3://[^/]+/org1-bucket-name/
       options:
         access_key: AKIAA1B2C3...
         secret_key: a1b2c3d4e5...
     - type: s3
       include:
-      - s3://[^/]+/org2-bucket-name
+      - s3://[^/]+/org2-bucket-name/
       options:
         access_key: AKIAB2C3D4...
         secret_key: b2c3d4e5f6...
