@@ -14,9 +14,9 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/dpb587/metalink"
-	metalinktemplate "github.com/dpb587/metalink/template"
 	"github.com/dpb587/metalink-repository-resource/api"
 	"github.com/dpb587/metalink-repository-resource/factory"
+	metalinktemplate "github.com/dpb587/metalink/template"
 	"github.com/dpb587/metalink/verification"
 	"github.com/dpb587/metalink/verification/hash"
 	"github.com/pkg/errors"
@@ -38,9 +38,10 @@ func main() {
 	api.MigrateSource(&request.Source)
 
 	var metalinkPath string
+	var localCache = map[string]string{}
 
 	if len(request.Params.Files) > 0 {
-		metalinkPath, err = createMetalink(request)
+		metalinkPath, localCache, err = createMetalink(request)
 		if err != nil {
 			api.Fatal("out: create metalink", err)
 		}
@@ -77,6 +78,11 @@ func main() {
 		api.Fatal("out: bad metalink: content error", errors.New("missing file node"))
 	} else if meta4.Files[0].Version == "" {
 		api.Fatal("out: bad metalink: content error", errors.New("missing file version node"))
+	}
+
+	meta4, err = mirrorMetalink(request, meta4, localCache)
+	if err != nil {
+		api.Fatal("out: mirroring", err)
 	}
 
 	metalinkFile, err := os.OpenFile(metalinkPath, os.O_RDONLY, 0700)
@@ -139,16 +145,17 @@ func main() {
 	}
 }
 
-func createMetalink(request Request) (string, error) {
+func createMetalink(request Request) (string, map[string]string, error) {
 	now := time.Now()
 	meta4 := metalink.Metalink{
 		Generator: "metalink-repository-resource/0.0.0",
 		Published: &now,
 	}
+	localCache := map[string]string{}
 
 	versionBytes, err := ioutil.ReadFile(filepath.Join(os.Args[1], request.Params.Version))
 	if err != nil {
-		return "", errors.Wrap(err, "reading version")
+		return "", nil, errors.Wrap(err, "reading version")
 	}
 
 	version := strings.TrimSpace(string(versionBytes))
@@ -158,7 +165,7 @@ func createMetalink(request Request) (string, error) {
 	for _, paramFile := range request.Params.Files {
 		filePaths, err := filepath.Glob(filepath.Join(os.Args[1], paramFile))
 		if err != nil {
-			return "", errors.Wrap(err, "globbing path")
+			return "", nil, errors.Wrap(err, "globbing path")
 		}
 
 		for _, filePath := range filePaths {
@@ -168,14 +175,16 @@ func createMetalink(request Request) (string, error) {
 				Hashes:  []metalink.Hash{},
 			}
 
-			local, err := urlLoader.LoadURL(metalink.URL{URL: fmt.Sprintf("file://%s", filePath)})
+			localCache[file.Name] = fmt.Sprintf("file://%s", filePath)
+
+			local, err := urlLoader.LoadURL(metalink.URL{URL: localCache[file.Name]})
 			if err != nil {
-				return "", errors.Wrap(err, "loading local file")
+				return "", nil, errors.Wrap(err, "loading local file")
 			}
 
 			file.Size, err = local.Size()
 			if err != nil {
-				return "", errors.Wrap(err, "getting size")
+				return "", nil, errors.Wrap(err, "getting size")
 			}
 
 			hashmap := []verification.Signer{
@@ -188,74 +197,13 @@ func createMetalink(request Request) (string, error) {
 			for _, hasher := range hashmap {
 				verification, err := hasher.Sign(local)
 				if err != nil {
-					return "", errors.Wrap(err, "building hash")
+					return "", nil, errors.Wrap(err, "building hash")
 				}
 
 				err = verification.Apply(&file)
 				if err != nil {
-					return "", errors.Wrap(err, "adding hash")
+					return "", nil, errors.Wrap(err, "adding hash")
 				}
-			}
-
-			for _, uploadParams := range request.Source.MirrorFiles {
-				remoteURLTmpl, err := metalinktemplate.New(uploadParams.Destination)
-				if err != nil {
-					return "", errors.Wrap(err, "parsing upload destination")
-				}
-
-				remoteURL, err := remoteURLTmpl.ExecuteString(file)
-				if err != nil {
-					return "", errors.Wrap(err, "generating upload destination")
-				}
-
-				var uri string
-				var uploadError error
-
-				for retry := 1; retry <= 3; retry ++ {
-					uploadError = nil
-
-					if retry > 1 {
-						fmt.Fprintf(os.Stderr, "\nretrying (attempt #%d)...\n", retry)
-					}
-
-					fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
-
-					remote, err := urlLoader.LoadURL(metalink.URL{URL: remoteURL})
-					if err != nil {
-						return "", errors.Wrap(err, "loading upload destination")
-					}
-
-					uri = remote.ReaderURI()
-
-					progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
-					progress.Start()
-
-					err = remote.WriteFrom(local, progress)
-					progress.Finish()
-
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "uploading failed: %v\n", err)
-
-						uploadError = err
-
-						continue
-					}
-
-					break
-				}
-
-				if uploadError != nil {
-					return "", errors.Wrap(uploadError, "uploading")
-				}
-
-				file.URLs = append(
-					file.URLs,
-					metalink.URL{
-						Location: uploadParams.Location,
-						Priority: uploadParams.Priority,
-						URL:      uri,
-					},
-				)
 			}
 
 			meta4.Files = append(meta4.Files, file)
@@ -264,20 +212,104 @@ func createMetalink(request Request) (string, error) {
 
 	meta4Bytes, err := metalink.MarshalXML(meta4)
 	if err != nil {
-		return "", errors.Wrap(err, "marshaling metalink")
+		return "", nil, errors.Wrap(err, "marshaling metalink")
 	}
 
 	tmpfile, err := ioutil.TempFile("", "metalink-repository")
 	if err != nil {
-		return "", errors.Wrap(err, "creating temp file")
+		return "", nil, errors.Wrap(err, "creating temp file")
 	}
 
 	_, err = tmpfile.Write(meta4Bytes)
 	if err != nil {
 		os.Remove(tmpfile.Name())
 
-		return "", errors.Wrap(err, "writing metalink")
+		return "", nil, errors.Wrap(err, "writing metalink")
 	}
 
-	return tmpfile.Name(), nil
+	return tmpfile.Name(), localCache, nil
+}
+
+func mirrorMetalink(request Request, meta4 metalink.Metalink, localCache map[string]string) (metalink.Metalink, error) {
+	urlLoader := factory.GetURLLoader(request.Source.URLHandlers)
+
+	for fileIdx, file := range meta4.Files {
+		// TODO support multiple URLs
+		localURI, isLocal := localCache[file.Name]
+		if !isLocal {
+			if len(file.URLs) < 1 {
+				return meta4, errors.New("file is missing url")
+			}
+
+			localURI = file.URLs[0].URL
+		}
+
+		local, err := urlLoader.LoadURL(metalink.URL{URL: localURI})
+		if err != nil {
+			return meta4, errors.Wrap(err, "loading local file")
+		}
+
+		for _, uploadParams := range request.Source.MirrorFiles {
+			remoteURLTmpl, err := metalinktemplate.New(uploadParams.Destination)
+			if err != nil {
+				return meta4, errors.Wrap(err, "parsing upload destination")
+			}
+
+			remoteURL, err := remoteURLTmpl.ExecuteString(file)
+			if err != nil {
+				return meta4, errors.Wrap(err, "generating upload destination")
+			}
+
+			var uri string
+			var uploadError error
+
+			for retry := 1; retry <= 3; retry++ {
+				uploadError = nil
+
+				if retry > 1 {
+					fmt.Fprintf(os.Stderr, "\nretrying (attempt #%d)...\n", retry)
+				}
+
+				fmt.Fprintf(os.Stderr, "uploading to %s\n", remoteURL)
+
+				remote, err := urlLoader.LoadURL(metalink.URL{URL: remoteURL})
+				if err != nil {
+					return meta4, errors.Wrap(err, "loading upload destination")
+				}
+
+				uri = remote.ReaderURI()
+
+				progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
+				progress.Start()
+
+				err = remote.WriteFrom(local, progress)
+				progress.Finish()
+
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "uploading failed: %v\n", err)
+
+					uploadError = err
+
+					continue
+				}
+
+				break
+			}
+
+			if uploadError != nil {
+				return meta4, errors.Wrap(uploadError, "uploading")
+			}
+
+			meta4.Files[fileIdx].URLs = append(
+				meta4.Files[fileIdx].URLs,
+				metalink.URL{
+					Location: uploadParams.Location,
+					Priority: uploadParams.Priority,
+					URL:      uri,
+				},
+			)
+		}
+	}
+
+	return meta4, nil
 }
