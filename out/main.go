@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -48,7 +49,7 @@ func main() {
 
 		defer os.Remove(metalinkPath)
 	} else {
-		metalinkPaths, err := filepath.Glob(filepath.Join(os.Args[1], request.Params.Metalink))
+		metalinkPaths, err := filepath.Glob(request.Params.Metalink)
 		if err != nil {
 			api.Fatal("out: bad metalink: globbing path", err)
 		} else if len(metalinkPaths) == 0 {
@@ -60,16 +61,14 @@ func main() {
 		metalinkPath = metalinkPaths[0]
 	}
 
-	metalinkBytes, err := ioutil.ReadFile(metalinkPath)
+	meta4Bytes, err := ioutil.ReadFile(metalinkPath)
 	if err != nil {
 		api.Fatal("out: bad metalink: read error", err)
 	}
 
-	fmt.Fprintf(os.Stderr, "%s\n", metalinkBytes)
-
 	meta4 := metalink.Metalink{}
 
-	err = metalink.Unmarshal(metalinkBytes, &meta4)
+	err = metalink.Unmarshal(meta4Bytes, &meta4)
 	if err != nil {
 		api.Fatal("out: bad metalink: parse error", err)
 	}
@@ -80,17 +79,31 @@ func main() {
 		api.Fatal("out: bad metalink: content error", errors.New("missing file version node"))
 	}
 
-	meta4, err = mirrorMetalink(request, meta4, localCache)
-	if err != nil {
-		api.Fatal("out: mirroring", err)
-	}
+	var metalinkFile io.Reader
 
-	metalinkFile, err := os.OpenFile(metalinkPath, os.O_RDONLY, 0700)
-	if err != nil {
-		api.Fatal("out: version file: create", err)
-	}
+	if len(request.Source.MirrorFiles) > 0 {
+		meta4, err = mirrorMetalink(request, meta4, localCache)
+		if err != nil {
+			api.Fatal("out: mirroring", err)
+		}
 
-	defer metalinkFile.Close()
+		meta4Bytes, err := metalink.MarshalXML(meta4)
+		if err != nil {
+			api.Fatal("out: bad metalink: marshal error", err)
+		}
+
+		metalinkFile = bytes.NewBuffer(meta4Bytes)
+	} else {
+		// preserve original raw file if we're not modifying it at all
+		metalinkFileReal, err := os.OpenFile(metalinkPath, os.O_RDONLY, 0700)
+		if err != nil {
+			api.Fatal("out: version file: create", err)
+		}
+
+		metalinkFile = metalinkFileReal
+
+		defer metalinkFileReal.Close()
+	}
 
 	var metalinkName string
 
@@ -153,7 +166,7 @@ func createMetalink(request Request) (string, map[string]string, error) {
 	}
 	localCache := map[string]string{}
 
-	versionBytes, err := ioutil.ReadFile(filepath.Join(os.Args[1], request.Params.Version))
+	versionBytes, err := ioutil.ReadFile(request.Params.Version)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "reading version")
 	}
@@ -163,7 +176,7 @@ func createMetalink(request Request) (string, map[string]string, error) {
 	urlLoader := factory.GetURLLoader(request.Source.URLHandlers)
 
 	for _, paramFile := range request.Params.Files {
-		filePaths, err := filepath.Glob(filepath.Join(os.Args[1], paramFile))
+		filePaths, err := filepath.Glob(paramFile)
 		if err != nil {
 			return "", nil, errors.Wrap(err, "globbing path")
 		}
