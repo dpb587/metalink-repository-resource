@@ -10,6 +10,10 @@
   branch = "master"
   name = "github.com/dpb587/metalink"
 
+[[override]]
+  name = "gopkg.in/fsnotify.v1"
+  source = "https://github.com/fsnotify/fsnotify.git"
+
 [prune]
   unused-packages = true
   non-go = true
