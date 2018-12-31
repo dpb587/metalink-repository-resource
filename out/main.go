@@ -182,13 +182,18 @@ func createMetalink(request Request) (string, map[string]string, error) {
 		}
 
 		for _, filePath := range filePaths {
+			filepathAbs, err := filepath.Abs(filePath)
+			if err != nil {
+				return "", nil, errors.Wrap(err, "finding absolute path")
+			}
+
 			file := metalink.File{
 				Name:    path.Base(filePath),
 				Version: version,
 				Hashes:  []metalink.Hash{},
 			}
 
-			localCache[file.Name] = fmt.Sprintf("file://%s", filePath)
+			localCache[file.Name] = fmt.Sprintf("file://%s", filepathAbs)
 
 			local, err := urlLoader.LoadURL(metalink.URL{URL: localCache[file.Name]})
 			if err != nil {
