@@ -13,6 +13,7 @@ A [Concourse](https://concourse.ci) resource for managing versions/files in a [M
  * `options` - a hash of supported options, depending on the repository type
     * for git repositories
        * `private_key` - a SSH private key for `git+ssh` URIs
+       * `rebase` - number of rebase attempts when pushing (default `3`)
     * for s3 repositories
        * `access_key` - access key for private S3 endpoints
        * `secret_key` - secret key for private S3 endpoints
