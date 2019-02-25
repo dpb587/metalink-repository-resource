@@ -1,4 +1,4 @@
-FROM golang:1.10 as resource
+FROM golang:1.11 as resource
 WORKDIR /go/src/github.com/dpb587/metalink-repository-resource
 COPY . .
 ENV CGO_ENABLED=0
