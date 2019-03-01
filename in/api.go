@@ -31,7 +31,8 @@ func (r Request) ApplyFilter(filter *and.Filter) error {
 }
 
 type Params struct {
-	SkipDownload bool `json:"skip_download"`
+	SkipDownload bool     `json:"skip_download"`
+	IncludeFiles []string `json:"include_files,omitempty"`
 }
 
 type Response struct {
