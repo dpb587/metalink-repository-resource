@@ -88,8 +88,7 @@ func main() {
 			}
 		}
 
-		// completely overrides the above block when params.IncludeFiles is present
-		if len(request.Params.IncludeFiles) > 0 {
+		if matched && len(request.Params.IncludeFiles) > 0 {
 			matched = false
 
 			for _, pattern := range request.Params.IncludeFiles {
@@ -101,7 +100,7 @@ func main() {
 			}
 		}
 
-		if len(request.Source.ExcludeFiles) > 0 {
+		if matched && len(request.Source.ExcludeFiles) > 0 {
 			for _, pattern := range request.Source.ExcludeFiles {
 				if match, _ := filepath.Match(pattern, file.Name); match {
 					matched = false

@@ -134,7 +134,7 @@ var _ = Describe("Main", func() {
 		Expect(storageBytes).To(Equal([]byte("a third file")))
 	})
 
-	It("respects source.include_files files", func() {
+	It("respects source.include_files", func() {
 		result := runCLI(fmt.Sprintf(`{
 	"source": {
 		"uri": "file://%s",
@@ -165,5 +165,38 @@ var _ = Describe("Main", func() {
 		storageBytes, err = ioutil.ReadFile(filepath.Join(inDir, "a-third.txt"))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(storageBytes).To(Equal([]byte("a third file")))
+	})
+
+	It("respects source.include_files + params.include_files", func() {
+		result := runCLI(fmt.Sprintf(`{
+	"source": {
+		"uri": "file://%s",
+		"include_files": [
+			"*d.txt"
+		]
+	},
+	"params": {
+		"include_files": [
+			"*s*"
+		]
+	},
+	"version": {
+		"version": "0.1.0"
+	}
+}`, repositoryDir))
+		Expect(result["version"].(map[string]interface{})["version"]).To(Equal("0.1.0"))
+		Expect(result["metadata"].([]interface{})).To(ContainElement(HaveKeyWithValue("name", "files")))
+		Expect(result["metadata"].([]interface{})).To(ContainElement(HaveKeyWithValue("name", "bytes")))
+
+		knownFiles, err := filepath.Glob(filepath.Join(inDir, "*"))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(knownFiles).To(ConsistOf(
+			filepath.Join(inDir, ".resource"),
+			filepath.Join(inDir, "a-second.txt"),
+		))
+
+		storageBytes, err := ioutil.ReadFile(filepath.Join(inDir, "a-second.txt"))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(storageBytes).To(Equal([]byte("a second file")))
 	})
 })
