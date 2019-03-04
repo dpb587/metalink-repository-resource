@@ -54,6 +54,7 @@ Download and verify the referenced file(s).
 
 Parameters:
 
+ * `include_files` - a list of file globs to match when downloading files (intersects with `include_files` from source configuration, when present)
  * `skip_download` - do not download blobs (only `metalink.meta4` and `version` will be available)
 
 
