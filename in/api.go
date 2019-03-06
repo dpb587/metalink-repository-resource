@@ -27,6 +27,15 @@ func (r Request) ApplyFilter(filter *and.Filter) error {
 		filter.Add(addFilter)
 	}
 
+	if r.Source.MetalinkGlob != "" {
+		addFilter, err := api.CreateFilePathFilter(r.Source.MetalinkGlob)
+		if err != nil {
+			return err
+		}
+
+		filter.Add(addFilter)
+	}
+
 	return nil
 }
 

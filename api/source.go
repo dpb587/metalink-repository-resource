@@ -6,8 +6,9 @@ import (
 )
 
 type Source struct {
-	URI     string                 `json:"uri"`
-	Options map[string]interface{} `json:"options,omitempty"`
+	URI          string                 `json:"uri"`
+	Options      map[string]interface{} `json:"options,omitempty"`
+	MetalinkGlob string                 `json:"metalink_glob,omitempty"`
 
 	SkipHashVerification      bool   `json:"skip_hash_verification,omitempty"`
 	SkipSignatureVerification bool   `json:"skip_signature_verification,omitempty"`
