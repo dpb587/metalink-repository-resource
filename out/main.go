@@ -297,7 +297,12 @@ func mirrorMetalink(request Request, meta4 metalink.Metalink, localCache map[str
 
 				uri = remote.ReaderURI()
 
-				progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
+				progress := pb.New64(int64(file.Size))
+				progress.Units = pb.U_BYTES
+				progress.SetRefreshRate(time.Second)
+				progress.SetWidth(80)
+				progress.Output = os.Stderr
+
 				progress.Start()
 
 				err = remote.WriteFrom(local, progress)

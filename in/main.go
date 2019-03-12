@@ -1,14 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"code.cloudfoundry.org/workpool"
 	"github.com/cheggaaa/pb"
 	"github.com/dpb587/metalink"
 	"github.com/dpb587/metalink-repository-resource/api"
@@ -33,7 +36,8 @@ func main() {
 		api.Fatal("in: bad destination", err)
 	}
 
-	var request Request
+	request := Request{}
+	request.Source.Parallel = 2
 
 	err = json.NewDecoder(os.Stdin).Decode(&request)
 	if err != nil {
@@ -72,6 +76,12 @@ func main() {
 
 	var fileCount int
 	var byteCount uint64
+
+	var parallelize []func()
+	var pbList []*pb.ProgressBar
+	var pbPool *pb.Pool
+
+	verifierResults := bytes.NewBuffer(nil)
 
 	for _, file := range metalinks[0].Metalink.Files {
 		var matched = true
@@ -115,36 +125,59 @@ func main() {
 		}
 
 		if !request.Params.SkipDownload {
-			if fileCount > 0 {
-				fmt.Fprintln(os.Stderr, "")
-			}
+			file := file // closure
 
-			fmt.Fprintln(os.Stderr, file.Name)
+			prefix := fmt.Sprintf("%.40s", file.Name)
 
-			local, err := urlLoader.LoadURL(metalink.URL{URL: filepath.Join(destination, file.Name)})
-			if err != nil {
-				api.Fatal(fmt.Sprintf("in: bad file: %s", file.Name), err)
-			}
+			progress := pb.New64(int64(file.Size))
+			progress.Prefix(prefix + strings.Repeat(" ", 40-len(prefix)))
+			progress.Units = pb.U_BYTES
+			progress.SetRefreshRate(time.Second)
+			progress.SetWidth(120)
 
-			progress := pb.New64(int64(file.Size)).Set(pb.Bytes, true).SetRefreshRate(time.Second).SetWidth(80)
-			progress.SetWriter(os.Stderr)
+			pbList = append(pbList, progress)
 
-			verifier, err := factory.DynamicVerification.GetVerifier(file, request.Source.SkipHashVerification, request.Source.SkipSignatureVerification, request.Source.SignatureTrustStore)
-			if err != nil {
-				api.Fatal(fmt.Sprintf("in: bad file verifier: %s", file.Name), err)
-			}
+			parallelize = append(parallelize, func() {
+				defer progress.Finish()
 
-			downloader := transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), urlLoader, verifier)
+				local, err := urlLoader.LoadURL(metalink.URL{URL: filepath.Join(destination, file.Name)})
+				if err != nil {
+					api.Fatal(fmt.Sprintf("in: bad file: %s", file.Name), err)
+				}
 
-			err = downloader.TransferFile(file, local, progress, verification.NewSimpleVerificationResultReporter(os.Stderr))
-			if err != nil {
-				api.Fatal(fmt.Sprintf("in: bad file transfer: %s", file.Name), err)
-			}
+				verifier, err := factory.DynamicVerification.GetVerifier(file, request.Source.SkipHashVerification, request.Source.SkipSignatureVerification, request.Source.SignatureTrustStore)
+				if err != nil {
+					api.Fatal(fmt.Sprintf("in: bad file verifier: %s", file.Name), err)
+				}
+
+				downloader := transfer.NewVerifiedTransfer(factory.GetMetaURLLoaderFactory(), urlLoader, verifier)
+
+				err = downloader.TransferFile(file, local, progress, verification.NewSimpleVerificationResultReporter(verifierResults))
+				if err != nil {
+					api.Fatal(fmt.Sprintf("in: bad file transfer: %s", file.Name), err)
+				}
+			})
 		}
 
 		byteCount = byteCount + file.Size
 		fileCount = fileCount + 1
 	}
+
+	if len(parallelize) > 0 {
+		pbPool, _ = pb.StartPool(pbList...)
+		pbPool.Output = os.Stderr
+
+		pool, err := workpool.NewThrottler(request.Source.Parallel, parallelize)
+		if err != nil {
+			api.Fatal("in: parallelizing", err)
+		}
+		pool.Work()
+
+		pbPool.Stop()
+	}
+
+	// defer verification output since it confuses progress bar
+	os.Stderr.Write(verifierResults.Bytes())
 
 	err = os.MkdirAll(filepath.Join(destination, ".resource"), 0700)
 	if err != nil {
