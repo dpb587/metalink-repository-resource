@@ -47,7 +47,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:86bbd7fda8522fc1b99c4e180befd26c8bbb82dd2f994974c7b666799c314f56"
+  digest = "1:0fc5f099f952d8c9cc8812a7c4ed2421ff81d34044f50b66bdf90978f1fb954e"
   name = "github.com/dpb587/metalink"
   packages = [
     ".",
@@ -80,7 +80,7 @@
     "verification/signature",
   ]
   pruneopts = "NUT"
-  revision = "166dfc5ca9016556263dd196fbbd43afd333ca13"
+  revision = "d1f29fe5b954e887e09d9fc7c3fdf846fbb8b5fd"
 
 [[projects]]
   branch = "master"
