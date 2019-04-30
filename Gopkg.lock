@@ -47,7 +47,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0fc5f099f952d8c9cc8812a7c4ed2421ff81d34044f50b66bdf90978f1fb954e"
+  digest = "1:4c04fd832920cb0fe63eea2eeffc6ac2394b917acc2db31dc773e881e02478a5"
   name = "github.com/dpb587/metalink"
   packages = [
     ".",
@@ -63,7 +63,10 @@
     "repository",
     "repository/filter",
     "repository/filter/and",
+    "repository/filter/axiom",
     "repository/filter/fileversion",
+    "repository/filter/repositorypath",
+    "repository/filterfactory",
     "repository/sorter",
     "repository/sorter/fileversion",
     "repository/source",
@@ -80,7 +83,7 @@
     "verification/signature",
   ]
   pruneopts = "NUT"
-  revision = "d1f29fe5b954e887e09d9fc7c3fdf846fbb8b5fd"
+  revision = "578c916bbfbd4c1469fdd1104c4ab57f55eed3e3"
 
 [[projects]]
   branch = "master"
@@ -397,6 +400,7 @@
     "github.com/dpb587/metalink/file/url/urlutil",
     "github.com/dpb587/metalink/repository/filter/and",
     "github.com/dpb587/metalink/repository/filter/fileversion",
+    "github.com/dpb587/metalink/repository/filterfactory",
     "github.com/dpb587/metalink/repository/sorter",
     "github.com/dpb587/metalink/repository/sorter/fileversion",
     "github.com/dpb587/metalink/repository/source",

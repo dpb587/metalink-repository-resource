@@ -10,6 +10,7 @@ A [Concourse](https://concourse.ci) resource for managing versions/files in a [M
  * `skip_hash_verification` - skip hash verification of files
  * `skip_signature_verification` - skip signature verification of files
  * `version` - a [supported](https://github.com/Masterminds/semver#basic-comparisons) version constraint (e.g. `^4.1`)
+ * `filters` - a list of [supported](#filters) filters to limit the discovered metalinks
  * `options` - a hash of supported options, depending on the repository type
     * for git repositories
        * `private_key` - a SSH private key for `git+ssh` URIs
@@ -114,6 +115,15 @@ When using multiple URLs which require different configurations, use the `includ
 		mirror_files:
     - destination: s3://s3-external-1.amazonaws.com/org1-bucket-name/my-private-blobs/{{.Version}}/{{.Name}}
     - destination: s3://s3-external-1.amazonaws.com/org2-bucket-name/my-private-blobs/{{.Version}}/{{.Name}}
+
+
+### Filters
+
+The `fileversion` and `repositorypath` filters are supported.
+
+    filters:
+    - repositorypath: prefix-*.meta4
+    - fileversion: 27.x              # equivalent to using source version
 
 
 ## License
