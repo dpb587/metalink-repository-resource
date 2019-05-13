@@ -1,8 +1,10 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/dpb587/metalink/repository/filter/and"
-	"github.com/dpb587/metalink/repository/filter/fileversion"
+	"github.com/dpb587/metalink/repository/filterfactory"
 )
 
 type Source struct {
@@ -20,7 +22,8 @@ type Source struct {
 	IncludeFiles []string `json:"include_files,omitempty"`
 	ExcludeFiles []string `json:"exclude_files,omitempty"`
 
-	Version string `json:"version,omitempty"`
+	Version string              `json:"version,omitempty"`
+	Filters []map[string]string `json:"filters,omitempty"`
 }
 
 type MirrorFileParams struct {
@@ -38,16 +41,31 @@ type HandlerSource struct {
 }
 
 func (s Source) ApplyFilter(filter *and.Filter) error {
-	if s.Version == "" {
-		return nil
+	filterManager := filterfactory.NewManager()
+
+	if s.Version != "" {
+		addFilter, err := filterManager.CreateFilter("fileversion", s.Version)
+		if err != nil {
+			return err
+		}
+
+		filter.Add(addFilter)
 	}
 
-	addFilter, err := fileversion.CreateFilter(s.Version)
-	if err != nil {
-		return err
-	}
+	for filterMapIdx, filterMap := range s.Filters {
+		if len(filterMap) != 1 {
+			return fmt.Errorf("filter %d: must have a single key/value tuple", filterMapIdx)
+		}
 
-	filter.Add(addFilter)
+		for filterType, filterValue := range filterMap {
+			addFilter, err := filterManager.CreateFilter(filterType, filterValue)
+			if err != nil {
+				return err
+			}
+
+			filter.Add(addFilter)
+		}
+	}
 
 	return nil
 }
