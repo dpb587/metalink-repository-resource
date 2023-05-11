@@ -40,6 +40,15 @@ func GetURLLoader(handlers []api.HandlerSource) url.Loader {
 				opts.SecretKey = valStr
 			}
 
+			if val, ok := handlerSource.Options["role_arn"]; ok {
+				valStr, ok := val.(string)
+				if !ok {
+					panic("unsupported handler option: s3: role_arn: expected string")
+				}
+
+				opts.RoleARN = valStr
+			}
+
 			handlerLoader = s3url.NewLoader(opts)
 		default:
 			panic(fmt.Errorf("unsupported handler: %s", handlerSource.Type))
