@@ -18,6 +18,8 @@ func GenerateRepository() (string, error) {
 		[]string{
 			"git init .",
 			"git config receive.denyCurrentBranch updateInstead",
+			"git config user.email testing@localhost",
+			"git config user.name testing",
 			"mkdir component",
 			`echo '{"files":[{"name":"test","version":"1.0.0"}]}' > component/v1.0.0.meta4`,
 			`echo '{"files":[{"name":"test","version":"2.0.0"}]}' > component/v2.0.0.meta4`,
