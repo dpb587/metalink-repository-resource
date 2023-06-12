@@ -16,6 +16,8 @@ func MigrateSource(source *Source) {
 				optsMap["access_key"] = mv
 			case "AWS_SECRET_ACCESS_KEY":
 				optsMap["secret_key"] = mv
+			case "AWS_ROLE_ARN":
+				optsMap["role_arn"] = mv
 			}
 		}
 
