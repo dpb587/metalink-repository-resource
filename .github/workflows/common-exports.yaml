@@ -1,0 +1,65 @@
+name: exports
+permissions:
+  contents: write
+on:
+  workflow_call:
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: false # conditionally required for release
+      DOCKERHUB_PASSWORD:
+        required: false # conditionally required for release
+jobs:
+  main:
+    name: main
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        path: repository
+    - id: exports
+      name: exports-prepare
+      uses: ./repository/.github/actions/exports-prepare
+    - name: exports-build-image
+      env:
+        EXPORTS_BUILD_GITREF: ${{ steps.exports.outputs.build_gitref }}
+        EXPORTS_BUILD_GITSHA: ${{ steps.exports.outputs.build_gitsha }}
+        EXPORTS_VERSION_NUMBER: ${{ steps.exports.outputs.version_number }}
+        EXPORTS_VERSION_LABELS: ${{ steps.exports.outputs.version_labels }}
+      run: |
+        exportdir="${PWD}/exports/artifacts/image"
+        mkdir -p "${exportdir}"
+
+        cd repository/
+        
+        image_repo="docker.io/dpb587/metalink-repository-resource"
+
+        if [[ "${EXPORTS_VERSION_NUMBER}" == "0.0.0" ]]
+        then
+          image_tags="commit-${EXPORTS_BUILD_GITSHA}"
+        else
+          # lazy assume tag is latest; is_latest_release not currently propagated
+          image_tags="latest ${EXPORTS_VERSION_NUMBER}${EXPORTS_VERSION_LABELS%+*}"
+        fi
+
+        mkdir -p "${exportdir}/docker-image"
+
+        docker build \
+          --tag "${image_repo}" \
+          .
+
+        for image_tag in ${image_tags}
+        do
+          docker tag "${image_repo}" "${image_repo}:${image_tag}"
+          echo "${image_repo}:${image_tag}" \
+            | tee -a "${exportdir}/docker-image/refs"
+        done
+
+    - name: exports-upload-github-release
+      if: github.ref_type == 'tag'
+      uses: ./repository/.github/actions/exports-upload-github-release
+      with:
+        upload_docker_image: true
+        docker_image_registry: docker.io
+        docker_image_username: ${{ secrets.DOCKERHUB_USERNAME }}
+        docker_image_password: ${{ secrets.DOCKERHUB_PASSWORD }}
