@@ -50,7 +50,6 @@ runs:
           ) >> "${publish_notes_path}"
         fi
 
-        cd "${{ inputs.repository_path }}"
         gh release edit "${{ github.ref_name }}" \
           --draft=false \
           --notes-file="${publish_notes_path}" \
