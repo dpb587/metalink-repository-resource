@@ -3,13 +3,13 @@ package factory
 import (
 	"fmt"
 
+	"github.com/dpb587/metalink-repository-resource/api"
+	"github.com/dpb587/metalink/file/url"
 	fileurl "github.com/dpb587/metalink/file/url/file"
 	ftpurl "github.com/dpb587/metalink/file/url/ftp"
 	httpurl "github.com/dpb587/metalink/file/url/http"
 	s3url "github.com/dpb587/metalink/file/url/s3"
 	"github.com/dpb587/metalink/file/url/urlutil"
-	"github.com/dpb587/metalink/file/url"
-	"github.com/dpb587/metalink-repository-resource/api"
 )
 
 func GetURLLoader(handlers []api.HandlerSource) url.Loader {

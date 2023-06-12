@@ -23,7 +23,7 @@ func MigrateSource(source *Source) {
 
 		if optsFound {
 			source.URLHandlers = append(source.URLHandlers, HandlerSource{
-				Type: "s3",
+				Type:    "s3",
 				Options: optsMap,
 			})
 		}
